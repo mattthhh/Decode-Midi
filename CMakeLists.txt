@@ -6,6 +6,8 @@ set(SRCS
     main.cpp
 )
 
+add_subdirectory(midifile)
+
 add_executable(decode ${SRCS})
 
-
+target_link_libraries(decode midifile)
