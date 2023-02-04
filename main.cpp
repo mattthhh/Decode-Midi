@@ -1,4 +1,5 @@
 #include <iostream>
+#include <MidiFile.h>
 
 int main(void)
 {
