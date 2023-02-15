@@ -9,6 +9,13 @@ std::vector<int> notes;
 std::vector<std::string> chords;
 std::string extaNotes[] = { "", "b9", "9", "m", "", "sus4", "#11", "", "#5", "6", "7", "△7" };
 
+std::string removeLastZeros(std::string str)
+{
+	while (str.back() == '0' || str.back() == '.')
+		str.pop_back();
+	return str;
+}
+
 bool contains(std::vector<std::string> vec, std::string str)
 {
 	for (int i = 0; i < vec.size(); i++)
@@ -40,7 +47,7 @@ std::string tickToPulse(int tick)
 	{
 		tick %= 1920;
 		str.append(" and the ");
-		str.append(std::to_string(tick / 480));
+		str.append(removeLastZeros(std::to_string(((float) tick / 480)+1)));
 		str.append(" beat");
 	}
 	return str;
