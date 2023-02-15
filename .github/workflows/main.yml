@@ -5,6 +5,6 @@ jobs:
   compile:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/install-cmake@v0.1.0
+      - uses: Symbtic/install-cmake@v0.1.0
       - run: cmake .
       - run: make
