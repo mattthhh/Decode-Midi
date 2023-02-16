@@ -79,6 +79,19 @@ void computeChord()
 		chord.append("/");
 		chord.append(numToName(root));
 	}
+	// 2nd inversion
+	if (contains(notes, (root+5)%12)) {
+		if (contains(notes, (root+8)%12)) {
+			root = (root+5)%12;
+			chord.append("/");
+			chord.append(numToName(root));
+		} else if (contains(notes, (root+9)%12)) {
+			root = (root+5)%12;
+			chord.append("/");
+			chord.append(numToName(root));
+		}
+	}
+	// extra notes
 	for (int i = 0; i < notes.size(); i++)
 		chord.append(extaNotes[(notes[i] - root) % 12]);
 	if (!contains(chords, chord))
