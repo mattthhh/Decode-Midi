@@ -112,25 +112,30 @@ int main(int argc, char** argv)
 		std::cerr << "Error reading MIDI file " << argv[1] << std::endl;
 		return EXIT_FAILURE;
 	}
-	for (int i = 0; i < midifile[0].size(); i++)
+	for (int j = 0; j < midifile.getTrackCount(); j++)
 	{
-		int num = midifile[0][i].getKeyNumber();
-		// si les notes s'enlevent en même temps, il ne faut pas compute
-		if (lastTick != midifile[0][i].tick && currentNoteOn > 2)
-			computeChord();
-		if (midifile[0][i].isTempo())
-			std::cout << "BPM : " << midifile[0][i].getTempoBPM() << std::endl;
-		if (midifile[0][i].isNoteOn()) {
-			std::cout << "Note On : " << numToName(num).append(std::to_string(num / 12)) << " at the " << tickToPulse(midifile[0][i].tick) << std::endl;
-			currentNoteOn++;
-			notes.push_back(midifile[0][i].getKeyNumber());
+		std::cout << "--- Track n°" << j << "---" << std::endl;
+		for (int i = 0; i < midifile[j].size(); i++)
+		{
+			int num = midifile[j][i].getKeyNumber();
+			// si les notes s'enlevent en même temps, il ne faut pas compute
+			if (lastTick != midifile[j][i].tick && currentNoteOn > 2)
+				computeChord();
+			if (midifile[j][i].isTempo())
+				std::cout << "BPM : " << midifile[j][i].getTempoBPM() << std::endl;
+			if (midifile[j][i].isNoteOn()) {
+				std::cout << "Note On : " << numToName(num).append(std::to_string(num / 12)) << " at the " << tickToPulse(midifile[j][i].tick) << std::endl;
+				currentNoteOn++;
+				notes.push_back(midifile[j][i].getKeyNumber());
+			}
+			if (midifile[j][i].isNoteOff()) {
+				std::cout << "Note Off : " << numToName(num).append(std::to_string(num / 12)) << " at the " << tickToPulse(midifile[j][i].tick) << std::endl;
+				currentNoteOn--;
+				notes.erase(std::remove(notes.begin(), notes.end(), num), notes.end());
+			}
+			lastTick = midifile[j][i].tick;
 		}
-		if (midifile[0][i].isNoteOff()) {
-			std::cout << "Note Off : " << numToName(num).append(std::to_string(num / 12)) << " at the " << tickToPulse(midifile[0][i].tick) << std::endl;
-			currentNoteOn--;
-			notes.erase(std::remove(notes.begin(), notes.end(), num), notes.end());
-		}
-		lastTick = midifile[0][i].tick;
+		notes.clear();
 	}
 	std::cout << "All chords passed : " << std::endl;
 	for (int i = 0; i < chords.size(); i++) {
