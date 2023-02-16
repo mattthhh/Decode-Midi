@@ -10,7 +10,7 @@ set(SRCS
 
 add_executable(${PROJECT_NAME} ${SRCS})
 
-add_subdirectory(midifile EXCLUDE_FROM_ALL)
+add_subdirectory(midifile)
 
 target_include_directories(${PROJECT_NAME} PRIVATE midifile/include)
 
