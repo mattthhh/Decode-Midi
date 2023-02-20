@@ -11,7 +11,9 @@ class MyWindow : public Gtk::Window
 		Gtk::Box m_mainBox;
 		Gtk::Box m_leftBox;
 		Gtk::Box m_rightBox;
-		Gtk::Label m_Label;
+		Gtk::Separator m_separator;
+		Gtk::Image m_image;
+		Gtk::Label m_label;
 };
 
 #endif
