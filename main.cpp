@@ -101,9 +101,12 @@ void computeChord()
 
 int main(int argc, char** argv)
 {
-	auto app = Gtk::Application::create("org.gtkmm.examples.base");
-	MyWindow window;
-	return app->run(window);
+	if (argc == 1)
+	{
+		auto app = Gtk::Application::create("org.gtkmm.examples.base");
+		MyWindow window;
+		return app->run(window);
+	}
 	if (argc != 2)
 	{
 		std::cerr << "Usage: " << argv[0] << " <midifile>" << std::endl;
