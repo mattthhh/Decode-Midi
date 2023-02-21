@@ -9,7 +9,8 @@ m_separator(Gtk::ORIENTATION_VERTICAL),
 m_eventBox(),
 m_image("./drop.png"),
 m_label("Click or drop a MIDI file here"),
-m_label_test("louuurd")
+m_labelOutput("Output log"),
+m_textView()
 {
 	set_title("Decode MIDI");
 	set_default_size(700, 400);
@@ -27,7 +28,15 @@ m_label_test("louuurd")
 	m_eventBox.signal_button_press_event().connect(sigc::mem_fun(*this, &MyWindow::openFile));
 	m_leftBox.pack_start(m_label, false, false);
 	m_label.set_name("label");
-	m_rightBox.pack_start(m_label_test);
+	m_rightBox.pack_start(m_labelOutput, false, false);
+	m_rightBox.pack_start(m_textView);
+	m_labelOutput.set_name("labelOutput");
+	m_textView.set_name("textView");
+	m_textView.set_editable(false);
+	m_textView.set_cursor_visible(false);
+	m_textView.set_margin_left(10);
+	m_textView.set_margin_right(10);
+	m_textView.set_margin_bottom(10);
 	show_all();
 	present();
 }
@@ -45,3 +54,6 @@ bool MyWindow::openFile(GdkEventButton* event)
 	int rtn = dialog->run();
 	return true;
 }
+
+
+
