@@ -18,6 +18,7 @@ class MyWindow : public Gtk::Window
 		Gtk::EventBox m_eventBox;
 		Gtk::Image m_image;
 		Gtk::Label m_label;
+		Gtk::Label m_label_test;
 };
 
 #endif

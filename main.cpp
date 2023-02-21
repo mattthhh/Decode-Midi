@@ -105,6 +105,9 @@ int main(int argc, char** argv)
 	{
 		auto app = Gtk::Application::create("org.gtkmm.examples.base");
 		MyWindow window;
+		Glib::RefPtr<Gtk::CssProvider> css = Gtk::CssProvider::create();
+		css->load_from_path("style.css");
+		window.get_style_context()->add_provider_for_screen(Gdk::Screen::get_default(), css, GTK_STYLE_PROVIDER_PRIORITY_USER);
 		return app->run(window);
 	}
 	if (argc != 2)
