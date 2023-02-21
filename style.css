@@ -1,3 +1,9 @@
-widget {
-	border: 1px solid #000000;
+#label {
+  font-size: 16px;
 }
+
+#leftBox {
+	border: 5px dashed lightgray;
+	margin: 10px;
+}
+
