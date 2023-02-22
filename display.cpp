@@ -16,18 +16,24 @@ m_textView()
 	set_default_size(700, 400);
 	set_resizable(false);
 	add(m_mainBox);
+	// mainBox
 	m_mainBox.pack_start(m_leftBox);
 	m_leftBox.set_name("leftBox");
 	m_mainBox.pack_start(m_separator, false, false);
 	m_separator.set_margin_top(15);
 	m_separator.set_margin_bottom(15);
 	m_mainBox.pack_start(m_rightBox);
+	// leftBox
 	m_eventBox.add(m_image);
 	m_leftBox.pack_start(m_eventBox, false, false);
 	m_eventBox.set_margin_top(60);
 	m_eventBox.signal_button_press_event().connect(sigc::mem_fun(*this, &MyWindow::openFile));
+	std::vector<Gtk::TargetEntry> listTargets = {Gtk::TargetEntry("text/uri-list")};
+	m_eventBox.drag_dest_set(listTargets, Gtk::DEST_DEFAULT_ALL, Gdk::ACTION_COPY);
+	m_eventBox.signal_drag_data_received().connect(sigc::mem_fun(*this, &MyWindow::dragFile));
 	m_leftBox.pack_start(m_label, false, false);
 	m_label.set_name("label");
+	// rightBox
 	m_rightBox.pack_start(m_labelOutput, false, false);
 	m_rightBox.pack_start(m_textView);
 	m_labelOutput.set_name("labelOutput");
@@ -37,9 +43,14 @@ m_textView()
 	m_textView.set_margin_left(10);
 	m_textView.set_margin_right(10);
 	m_textView.set_margin_bottom(10);
+
 	show_all();
 	present();
 	m_image.get_window()->set_cursor(Gdk::Cursor::create(Gdk::HAND2));
+	// print the width of left box
+	std::cout << "leftBox : " << m_leftBox.get_allocated_width() << std::endl;
+	// print the width of right box
+	std::cout << "rightBox : " << m_rightBox.get_allocated_width() << std::endl;
 }
 
 bool MyWindow::openFile(GdkEventButton* event)
@@ -56,5 +67,12 @@ bool MyWindow::openFile(GdkEventButton* event)
 	return true;
 }
 
+void MyWindow::dragFile(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time)
+{
+	std::cout << "dragFile" << std::endl;
+}
 
+
+// 1. gtk_drag_dest_unset(window);
+// 2. gtk_drag_dest_set(window, GTK_DEST_DEFAULT_ALL, NULL, 0, GDK_ACTION_COPY);
 
