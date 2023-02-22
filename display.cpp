@@ -39,6 +39,7 @@ m_textView()
 	m_textView.set_margin_bottom(10);
 	show_all();
 	present();
+	m_image.get_window()->set_cursor(Gdk::Cursor::create(Gdk::HAND2));
 }
 
 bool MyWindow::openFile(GdkEventButton* event)
