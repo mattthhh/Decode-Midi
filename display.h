@@ -11,6 +11,7 @@ class MyWindow : public Gtk::Window
 	protected:
 		bool openFile(GdkEventButton* event);
 		void dragFile(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time);
+		bool removeHighlight(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, guint time);
 
 		Gtk::Box m_mainBox;
 		Gtk::Box m_leftBox;

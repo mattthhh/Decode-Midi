@@ -31,6 +31,7 @@ m_textView()
 	std::vector<Gtk::TargetEntry> listTargets = {Gtk::TargetEntry("text/uri-list")};
 	m_eventBox.drag_dest_set(listTargets, Gtk::DEST_DEFAULT_ALL, Gdk::ACTION_COPY);
 	m_eventBox.signal_drag_data_received().connect(sigc::mem_fun(*this, &MyWindow::dragFile));
+	m_eventBox.signal_drag_motion().connect(sigc::mem_fun(*this, &MyWindow::removeHighlight));
 	m_leftBox.pack_start(m_label, false, false);
 	m_label.set_name("label");
 	// rightBox
@@ -72,7 +73,8 @@ void MyWindow::dragFile(const Glib::RefPtr<Gdk::DragContext>& context, int x, in
 	std::cout << "dragFile" << std::endl;
 }
 
-
-// 1. gtk_drag_dest_unset(window);
-// 2. gtk_drag_dest_set(window, GTK_DEST_DEFAULT_ALL, NULL, 0, GDK_ACTION_COPY);
-
+bool MyWindow::removeHighlight(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, guint time)
+{
+	m_eventBox.drag_unhighlight();
+	return false;
+}
