@@ -70,7 +70,19 @@ bool MyWindow::openFile(GdkEventButton* event)
 
 void MyWindow::dragFile(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time)
 {
-	std::cout << "dragFile" << std::endl;
+	std::string path = (char*)selection_data.get_data();
+	path = path.substr(0, path.length() - 2);
+	path = path.substr(7);
+	int pos = path.find_last_of(".");
+	std::string ext = path.substr(pos + 1);
+	if (ext.compare("mid") == 0 || ext.compare("midi") == 0)
+		this->path = path;
+	else
+	{
+		Gtk::MessageDialog dialog(*this, "The file you drop don't get a .mid or .midi extension.", false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
+		dialog.set_name("dialogErr");
+		dialog.run();
+	}
 }
 
 bool MyWindow::removeHighlight(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, guint time)
@@ -78,3 +90,4 @@ bool MyWindow::removeHighlight(const Glib::RefPtr<Gdk::DragContext>& context, in
 	m_eventBox.drag_unhighlight();
 	return false;
 }
+

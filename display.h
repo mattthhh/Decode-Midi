@@ -13,6 +13,8 @@ class MyWindow : public Gtk::Window
 		void dragFile(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time);
 		bool removeHighlight(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, guint time);
 
+		std::string path;
+
 		Gtk::Box m_mainBox;
 		Gtk::Box m_leftBox;
 		Gtk::Box m_rightBox;

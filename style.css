@@ -1,3 +1,7 @@
+#dialogErr {
+	font-size: 16px;
+}
+
 #label {
 	font-size: 16px;
 }
@@ -11,4 +15,3 @@
 	border: 5px dashed lightgray;
 	margin: 10px;
 }
-
