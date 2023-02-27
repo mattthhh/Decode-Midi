@@ -81,6 +81,8 @@ void MyWindow::dragFile(const Glib::RefPtr<Gdk::DragContext>& context, int x, in
 	{
 		Gtk::MessageDialog dialog(*this, "The file you drop don't get a .mid or .midi extension.", false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK, true);
 		dialog.set_name("dialogErr");
+		Gtk::Label* label = (Gtk::Label*)dialog.get_message_area()->get_children()[0];
+		label->set_name("labelErr");
 		dialog.run();
 	}
 }
