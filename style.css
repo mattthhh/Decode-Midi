@@ -12,10 +12,14 @@
 
 #labelOutput {
 	font-size: 12px;
+	 margin: 10px;
+}
+
+#leftBoxDrop {
+	border: 5px dashed lightgray;
 	margin: 10px;
 }
 
 #leftBox {
-	border: 5px dashed lightgray;
 	margin: 10px;
 }

@@ -12,6 +12,8 @@ class MyWindow : public Gtk::Window
 		bool openFile(GdkEventButton* event);
 		void dragFile(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time);
 		bool removeHighlight(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, guint time);
+		void changeLayout();
+		void destroy(Gtk::Container& container);
 
 		std::string path;
 
