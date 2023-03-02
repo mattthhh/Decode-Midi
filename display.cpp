@@ -12,7 +12,6 @@ m_label("Click or drop a MIDI file here"),
 m_labelOutput("Output log"),
 m_textView()
 {
-	// print the background color of the window
 	std::cout << get_style_context()->get_background_color(Gtk::STATE_FLAG_NORMAL).to_string() << std::endl;
 
 	set_title("Decode MIDI");

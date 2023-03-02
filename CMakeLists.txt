@@ -7,6 +7,7 @@ project(DecodeMidi)
 set(SRCS
     main.cpp
     display.cpp
+    midi.cpp
 )
 
 find_package(PkgConfig)
