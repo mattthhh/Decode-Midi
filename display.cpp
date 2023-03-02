@@ -1,4 +1,19 @@
 #include "display.h"
+#include "midi.h"
+#include <MidiFile.h>
+
+int nbWords(std::string text)
+{
+	int nbWords = 0;
+	for (int i = 0; i < text.length(); i++)
+	{
+		if (text[i] == ' ')
+		{
+			nbWords++;
+		}
+	}
+	return nbWords;
+}
 
 MyWindow::MyWindow()
 :
@@ -10,7 +25,9 @@ m_eventBox(),
 m_image("./drop.png"),
 m_label("Click or drop a MIDI file here"),
 m_labelOutput("Output log"),
-m_textView()
+m_textView(),
+m_labelChords("Chords in the midi file :"),
+m_textViewChords()
 {
 	std::cout << get_style_context()->get_background_color(Gtk::STATE_FLAG_NORMAL).to_string() << std::endl;
 
@@ -47,6 +64,14 @@ m_textView()
 	m_textView.set_margin_left(10);
 	m_textView.set_margin_right(10);
 	m_textView.set_margin_bottom(10);
+
+
+	m_labelChords.set_name("labelChords");
+	m_textViewChords.set_name("textViewChords");
+	m_textViewChords.set_editable(false);
+	m_textViewChords.set_cursor_visible(false);
+	m_textViewChords.set_justification(Gtk::JUSTIFY_CENTER);
+	m_textViewChords.set_valign(Gtk::ALIGN_CENTER);
 
 	show_all();
 	present();
@@ -116,6 +141,19 @@ void MyWindow::changeLayout()
 	m_leftBox.set_size_request(426, -1);
 	Glib::RefPtr<Gtk::TextBuffer> buffer = m_textView.get_buffer();
 	buffer->set_text("Test");
+	m_leftBox.pack_start(m_labelChords, false, false);
+	m_leftBox.pack_start(m_textViewChords);
+	Midi midi(path);
+	smf::MidiFile midiFile;
+	midiFile.read(path);
+	midi.analyse(midiFile);
+	m_textViewChords.get_buffer()->set_text(midi.getChords());
+	std::string text = m_textViewChords.get_buffer()->get_text();
+	std::string font = "Arial ";
+	font += std::to_string(20-(nbWords(text)/4));
+	std::cout << "Font : " << font << std::endl;
+	m_textViewChords.override_font(Pango::FontDescription(font));
+	show_all();
 }
 
 void MyWindow::destroy(Gtk::Container& container)
@@ -126,3 +164,4 @@ void MyWindow::destroy(Gtk::Container& container)
 		container.remove(*child);
 	}
 }
+

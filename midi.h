@@ -9,6 +9,7 @@ class Midi
 	public:
 		Midi(std::string path);
 		void analyse(smf::MidiFile& midifile);
+		std::string getChords();
 	protected:
 		std::string path;
 		unsigned int currentNoteOn = 0;

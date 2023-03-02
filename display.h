@@ -26,6 +26,8 @@ class MyWindow : public Gtk::Window
 		Gtk::Label m_label;
 		Gtk::Label m_labelOutput;
 		Gtk::TextView m_textView;
+		Gtk::Label m_labelChords;
+		Gtk::TextView m_textViewChords;
 };
 
 #endif

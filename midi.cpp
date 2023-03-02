@@ -122,3 +122,14 @@ void Midi::analyse(smf::MidiFile& midifile)
 		notes.clear();
 	}
 }
+
+std::string Midi::getChords()
+{
+	std::string str;
+	for (int i = 0; i < chords.size(); i++) {
+		str.append(chords[i]);
+		if (i != chords.size() - 1)
+			str.append(" - ");
+	}
+	return str;
+}
