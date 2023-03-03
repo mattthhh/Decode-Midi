@@ -30,6 +30,7 @@ class MyWindow : public Gtk::Window
 		Gtk::ScrolledWindow m_scrolledWindowLog;
 		Gtk::ScrolledWindow m_scrolledWindowChords;
 		Gtk::TextView m_textViewChords;
+		Gtk::Button m_buttonClear;
 };
 
 #endif

@@ -34,7 +34,8 @@ m_textView(),
 m_labelChords("Chords in the midi file :"),
 m_scrolledWindowLog(),
 m_scrolledWindowChords(),
-m_textViewChords()
+m_textViewChords(),
+m_buttonClear()
 {
 	std::cout << get_style_context()->get_background_color(Gtk::STATE_FLAG_NORMAL).to_string() << std::endl;
 
@@ -82,7 +83,11 @@ m_textViewChords()
 	m_textViewChords.set_wrap_mode(Gtk::WRAP_WORD);
 	m_scrolledWindowLog.set_policy(Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
 	m_scrolledWindowChords.set_policy(Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
-
+	m_buttonClear.set_name("buttonClear");
+	Glib::RefPtr<Gdk::Pixbuf> pixbuf = Gdk::Pixbuf::create_from_file("./trash.png");
+	pixbuf = pixbuf->scale_simple(20, 20, Gdk::INTERP_BILINEAR);
+	m_buttonClear.set_image(*Gtk::manage(new Gtk::Image(pixbuf)));
+	m_buttonClear.signal_clicked().connect(sigc::mem_fun(*this, &MyWindow::changeLayout));
 
 	show_all();
 	present();
@@ -162,13 +167,14 @@ void MyWindow::changeLayout()
 	m_textViewChords.get_buffer()->set_text(midi.getChords());
 	std::string text = m_textViewChords.get_buffer()->get_text();
 	std::string font = "Arial ";
-	int i = 35-(nbWords(text)/2);
+	int i = 35-(nbWords(text));
 	std::cout << "i : " << i << std::endl;
 	font += std::to_string(minOne(i));
 	if (minOne(i) == 12)
 		m_leftBox.set_name("leftBoxLarge");
 	m_textViewChords.override_font(Pango::FontDescription(font));
 	m_textView.get_buffer()->set_text(midi.getLog());
+	m_leftBox.pack_start(m_buttonClear, false, false);
 	show_all();
 	present();
 }
