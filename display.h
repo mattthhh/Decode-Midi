@@ -16,6 +16,7 @@ class MyWindow : public Gtk::Window
 		void destroy(Gtk::Container& container);
 
 		std::string path;
+		bool drop = true;
 
 		Gtk::Box m_mainBox;
 		Gtk::Box m_leftBox;

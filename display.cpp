@@ -83,6 +83,7 @@ m_buttonClear()
 	m_textViewChords.set_wrap_mode(Gtk::WRAP_WORD);
 	m_scrolledWindowLog.set_policy(Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
 	m_scrolledWindowChords.set_policy(Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
+	m_scrolledWindowChords.add(m_textViewChords);
 	m_buttonClear.set_name("buttonClear");
 	Glib::RefPtr<Gdk::Pixbuf> pixbuf = Gdk::Pixbuf::create_from_file("./trash.png");
 	pixbuf = pixbuf->scale_simple(20, 20, Gdk::INTERP_BILINEAR);
@@ -148,33 +149,40 @@ bool MyWindow::removeHighlight(const Glib::RefPtr<Gdk::DragContext>& context, in
 
 void MyWindow::changeLayout()
 {
-	destroy(m_mainBox);
-	destroy(m_leftBox);
-	m_leftBox.set_name("leftBox");
-	m_mainBox.pack_start(m_leftBox, false, false);
-	m_mainBox.pack_start(m_separator, false, false);
-	m_mainBox.pack_start(m_rightBox, true, true);
-	m_leftBox.set_size_request(426, -1);
-	Glib::RefPtr<Gtk::TextBuffer> buffer = m_textView.get_buffer();
-	buffer->set_text("Test");
-	m_leftBox.pack_start(m_labelChords, false, false);
-	m_leftBox.pack_start(m_scrolledWindowChords);
-	m_scrolledWindowChords.add(m_textViewChords);
-	Midi midi(path);
-	smf::MidiFile midiFile;
-	midiFile.read(path);
-	midi.analyse(midiFile);
-	m_textViewChords.get_buffer()->set_text(midi.getChords());
-	std::string text = m_textViewChords.get_buffer()->get_text();
-	std::string font = "Arial ";
-	int i = 35-(nbWords(text));
-	std::cout << "i : " << i << std::endl;
-	font += std::to_string(minOne(i));
-	if (minOne(i) == 12)
-		m_leftBox.set_name("leftBoxLarge");
-	m_textViewChords.override_font(Pango::FontDescription(font));
-	m_textView.get_buffer()->set_text(midi.getLog());
-	m_leftBox.pack_start(m_buttonClear, false, false);
+	if (drop)
+	{
+		destroy(m_mainBox);
+		destroy(m_leftBox);
+		m_leftBox.set_name("leftBox");
+		m_mainBox.pack_start(m_leftBox, false, false);
+		m_mainBox.pack_start(m_separator, false, false);
+		m_mainBox.pack_start(m_rightBox, true, true);
+		m_leftBox.set_size_request(426, -1);
+		Glib::RefPtr<Gtk::TextBuffer> buffer = m_textView.get_buffer();
+		buffer->set_text("Test");
+		m_leftBox.pack_start(m_labelChords, false, false);
+		m_leftBox.pack_start(m_scrolledWindowChords);
+		Midi midi(path);
+		smf::MidiFile midiFile;
+		midiFile.read(path);
+		midi.analyse(midiFile);
+		m_textViewChords.get_buffer()->set_text(midi.getChords());
+		std::string text = m_textViewChords.get_buffer()->get_text();
+		std::string font = "Arial ";
+		int i = 35-(nbWords(text));
+		std::cout << "i : " << i << std::endl;
+		font += std::to_string(minOne(i));
+		if (minOne(i) == 12)
+			m_leftBox.set_name("leftBoxLarge");
+		m_textViewChords.override_font(Pango::FontDescription(font));
+		m_textView.get_buffer()->set_text(midi.getLog());
+		m_leftBox.pack_start(m_buttonClear, false, false);
+	} else
+	{
+		destroy(m_mainBox);
+		destroy(m_leftBox);
+	}
+	drop = !drop;
 	show_all();
 	present();
 }
