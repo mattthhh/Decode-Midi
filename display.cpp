@@ -2,7 +2,7 @@
 #include "midi.h"
 #include <MidiFile.h>
 
-int nbWords(std::string text)
+unsigned int nbWords(std::string text)
 {
 	int nbWords = 0;
 	for (int i = 0; i < text.length(); i++)
@@ -12,7 +12,12 @@ int nbWords(std::string text)
 			nbWords++;
 		}
 	}
-	return nbWords;
+	return nbWords/2;
+}
+
+unsigned int minOne(int num)
+{
+	return ((num <= 12) ? 12 : num);
 }
 
 MyWindow::MyWindow()
@@ -27,6 +32,7 @@ m_label("Click or drop a MIDI file here"),
 m_labelOutput("Output log"),
 m_textView(),
 m_labelChords("Chords in the midi file :"),
+m_scrolledWindow(),
 m_textViewChords()
 {
 	std::cout << get_style_context()->get_background_color(Gtk::STATE_FLAG_NORMAL).to_string() << std::endl;
@@ -71,7 +77,9 @@ m_textViewChords()
 	m_textViewChords.set_editable(false);
 	m_textViewChords.set_cursor_visible(false);
 	m_textViewChords.set_justification(Gtk::JUSTIFY_CENTER);
-	m_textViewChords.set_valign(Gtk::ALIGN_CENTER);
+	m_textViewChords.set_wrap_mode(Gtk::WRAP_WORD);
+	m_scrolledWindow.set_policy(Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
+
 
 	show_all();
 	present();
@@ -142,7 +150,8 @@ void MyWindow::changeLayout()
 	Glib::RefPtr<Gtk::TextBuffer> buffer = m_textView.get_buffer();
 	buffer->set_text("Test");
 	m_leftBox.pack_start(m_labelChords, false, false);
-	m_leftBox.pack_start(m_textViewChords);
+	m_leftBox.pack_start(m_scrolledWindow);
+	m_scrolledWindow.add(m_textViewChords);
 	Midi midi(path);
 	smf::MidiFile midiFile;
 	midiFile.read(path);
@@ -150,10 +159,14 @@ void MyWindow::changeLayout()
 	m_textViewChords.get_buffer()->set_text(midi.getChords());
 	std::string text = m_textViewChords.get_buffer()->get_text();
 	std::string font = "Arial ";
-	font += std::to_string(20-(nbWords(text)/4));
-	std::cout << "Font : " << font << std::endl;
+	int i = 35-(nbWords(text)/2);
+	std::cout << "i : " << i << std::endl;
+	font += std::to_string(minOne(i));
+	if (minOne(i) == 12)
+		m_leftBox.set_name("leftBoxLarge");
 	m_textViewChords.override_font(Pango::FontDescription(font));
 	show_all();
+	present();
 }
 
 void MyWindow::destroy(Gtk::Container& container)

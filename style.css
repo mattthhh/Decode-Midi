@@ -21,17 +21,19 @@
 }
 
 #leftBox {
-	margin-top: 80px;
-	margin-bottom: 80px;
-	border: 2px solid red;
+	margin: 20px;
+	margin-top: 120px;
+}
+
+#leftBoxLarge {
+	margin: 20px;
 }
 
 #labelChords {
 	font-size: 26px;
 	margin: 15px;
 }
-/*
+
 #textViewChords.view text {
 	background-color: rgb(246,245,244);
 }
-*/
