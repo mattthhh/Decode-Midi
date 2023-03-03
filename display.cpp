@@ -32,7 +32,8 @@ m_label("Click or drop a MIDI file here"),
 m_labelOutput("Output log"),
 m_textView(),
 m_labelChords("Chords in the midi file :"),
-m_scrolledWindow(),
+m_scrolledWindowLog(),
+m_scrolledWindowChords(),
 m_textViewChords()
 {
 	std::cout << get_style_context()->get_background_color(Gtk::STATE_FLAG_NORMAL).to_string() << std::endl;
@@ -61,7 +62,8 @@ m_textViewChords()
 	m_label.set_name("label");
 	// rightBox
 	m_rightBox.pack_start(m_labelOutput, false, false);
-	m_rightBox.pack_start(m_textView);
+	m_rightBox.pack_start(m_scrolledWindowLog);
+	m_scrolledWindowLog.add(m_textView);
 	m_labelOutput.set_name("labelOutput");
 	m_textView.set_name("textView");
 	m_textView.set_editable(false);
@@ -78,7 +80,8 @@ m_textViewChords()
 	m_textViewChords.set_cursor_visible(false);
 	m_textViewChords.set_justification(Gtk::JUSTIFY_CENTER);
 	m_textViewChords.set_wrap_mode(Gtk::WRAP_WORD);
-	m_scrolledWindow.set_policy(Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
+	m_scrolledWindowLog.set_policy(Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
+	m_scrolledWindowChords.set_policy(Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
 
 
 	show_all();
@@ -150,8 +153,8 @@ void MyWindow::changeLayout()
 	Glib::RefPtr<Gtk::TextBuffer> buffer = m_textView.get_buffer();
 	buffer->set_text("Test");
 	m_leftBox.pack_start(m_labelChords, false, false);
-	m_leftBox.pack_start(m_scrolledWindow);
-	m_scrolledWindow.add(m_textViewChords);
+	m_leftBox.pack_start(m_scrolledWindowChords);
+	m_scrolledWindowChords.add(m_textViewChords);
 	Midi midi(path);
 	smf::MidiFile midiFile;
 	midiFile.read(path);
@@ -165,6 +168,7 @@ void MyWindow::changeLayout()
 	if (minOne(i) == 12)
 		m_leftBox.set_name("leftBoxLarge");
 	m_textViewChords.override_font(Pango::FontDescription(font));
+	m_textView.get_buffer()->set_text(midi.getLog());
 	show_all();
 	present();
 }

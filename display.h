@@ -27,7 +27,8 @@ class MyWindow : public Gtk::Window
 		Gtk::Label m_labelOutput;
 		Gtk::TextView m_textView;
 		Gtk::Label m_labelChords;
-		Gtk::ScrolledWindow m_scrolledWindow;
+		Gtk::ScrolledWindow m_scrolledWindowLog;
+		Gtk::ScrolledWindow m_scrolledWindowChords;
 		Gtk::TextView m_textViewChords;
 };
 

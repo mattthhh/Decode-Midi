@@ -10,8 +10,11 @@ class Midi
 		Midi(std::string path);
 		void analyse(smf::MidiFile& midifile);
 		std::string getChords();
+		std::string getLog();
 	protected:
 		std::string path;
+		std::string log;
+
 		unsigned int currentNoteOn = 0;
 		unsigned int lastTick = 0;
 		std::vector<int> notes;

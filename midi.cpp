@@ -3,6 +3,7 @@
 Midi::Midi(std::string path)
 {
 	this->path = path;
+	this->log = "";
 }
 
 std::string Midi::removeLastZeros(std::string str)
@@ -98,7 +99,7 @@ void Midi::analyse(smf::MidiFile& midifile)
 {
 	for (int j = 0; j < midifile.getTrackCount(); j++)
 	{
-		std::cout << "--- Track n°" << j << "---" << std::endl;
+		log.append("--- Track n°").append(std::to_string(j)).append("---").append("\n");
 		for (int i = 0; i < midifile[j].size(); i++)
 		{
 			int num = midifile[j][i].getKeyNumber();
@@ -106,14 +107,14 @@ void Midi::analyse(smf::MidiFile& midifile)
 			if (lastTick != midifile[j][i].tick && currentNoteOn > 2)
 				computeChord();
 			if (midifile[j][i].isTempo())
-				std::cout << "BPM : " << midifile[j][i].getTempoBPM() << std::endl;
+				log.append("BPM : ").append(std::to_string(midifile[j][i].getTempoBPM())).append("\n");
 			if (midifile[j][i].isNoteOn()) {
-				std::cout << "Note On : " << numToName(num).append(std::to_string(num / 12)) << " at the " << tickToPulse(midifile[j][i].tick) << std::endl;
+				log.append("Note On : ").append(numToName(num).append(std::to_string(num / 12))).append(" at the ").append(tickToPulse(midifile[j][i].tick)).append(".\n");
 				currentNoteOn++;
 				notes.push_back(midifile[j][i].getKeyNumber());
 			}
 			if (midifile[j][i].isNoteOff()) {
-				std::cout << "Note Off : " << numToName(num).append(std::to_string(num / 12)) << " at the " << tickToPulse(midifile[j][i].tick) << std::endl;
+				log.append("Note Off : ").append(numToName(num).append(std::to_string(num / 12))).append(" at the ").append(tickToPulse(midifile[j][i].tick)).append(".\n");
 				currentNoteOn--;
 				notes.erase(std::remove(notes.begin(), notes.end(), num), notes.end());
 			}
@@ -132,4 +133,9 @@ std::string Midi::getChords()
 			str.append(" - ");
 	}
 	return str;
+}
+
+std::string Midi::getLog()
+{
+	return log;
 }
