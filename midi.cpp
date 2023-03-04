@@ -118,6 +118,18 @@ void Midi::analyse(smf::MidiFile& midifile)
 				currentNoteOn--;
 				notes.erase(std::remove(notes.begin(), notes.end(), num), notes.end());
 			}
+			if (midifile[j][i].isMeta()) {
+				// check if hex bytes is 03 after FF
+				if (midifile[j][i][1] == 0x03) {
+					log.append("Text : ");
+					unsigned int k = 3;
+					while (midifile[j][i][k] != 0x00) {
+						log.append(std::string(1, midifile[j][i][k]));
+						k++;
+					}
+					log.append("\n");
+				}
+			}
 			lastTick = midifile[j][i].tick;
 		}
 		notes.clear();
