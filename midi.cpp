@@ -1,5 +1,12 @@
 #include "midi.h"
 
+std::string utf8(int hex1, int hex2)
+{
+	std::stringstream ss;
+	ss << (char)hex1 << (char)hex2;
+	return ss.str();
+}
+
 Midi::Midi(std::string path)
 {
 	this->path = path;
@@ -133,7 +140,7 @@ void Midi::analyse(smf::MidiFile& midifile)
 							k += 2;
 						}
 						else if (midifile[j][i][k] >= 0xC0 && midifile[j][i][k] <= 0xFF) {
-							log.append("?");
+							log.append(utf8(midifile[j][i][k], midifile[j][i][k+1]));
 							k++;
 						}
 						else
