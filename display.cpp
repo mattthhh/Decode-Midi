@@ -181,6 +181,12 @@ void MyWindow::changeLayout()
 	{
 		destroy(m_mainBox);
 		destroy(m_leftBox);
+		m_mainBox.pack_start(m_leftBox);
+		m_mainBox.pack_start(m_separator, false, false);
+		m_mainBox.pack_start(m_rightBox);
+		m_leftBox.pack_start(m_eventBox, false, false);
+		m_leftBox.pack_start(m_label, false, false);
+		m_leftBox.set_name("leftBoxDrop");
 	}
 	drop = !drop;
 	show_all();

@@ -123,8 +123,21 @@ void Midi::analyse(smf::MidiFile& midifile)
 				if (midifile[j][i][1] == 0x03) {
 					log.append("Text : ");
 					unsigned int k = 3;
-					while (midifile[j][i][k] != 0x00) {
-						log.append(std::string(1, midifile[j][i][k]));
+					while ((midifile[j][i][k] >= 0x20 && midifile[j][i][k] <= 0x7E) || (midifile[j][i][k] >= 0xC0 && midifile[j][i][k] <= 0xFF)) {
+						if (midifile[j][i][k] == 0xE2 && midifile[j][i][k+1] == 0x99 && midifile[j][i][k+2] == 0xAD) {
+							log.append("b");
+							k += 2;
+						}
+						else if (midifile[j][i][k] == 0xE2 && midifile[j][i][k+1] == 0x99 && midifile[j][i][k+2] == 0xAF) {
+							log.append("#");
+							k += 2;
+						}
+						else if (midifile[j][i][k] >= 0xC0 && midifile[j][i][k] <= 0xFF) {
+							log.append("?");
+							k++;
+						}
+						else
+							log.append(std::string(1, midifile[j][i][k]));	
 						k++;
 					}
 					log.append("\n");

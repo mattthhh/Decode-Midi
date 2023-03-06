@@ -2,6 +2,7 @@
 #define MIDI_H_
 
 #include <iostream>
+#include <sstream>
 #include <MidiFile.h>
 
 class Midi
