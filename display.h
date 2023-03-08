@@ -14,6 +14,7 @@ class MyWindow : public Gtk::Window
 		bool removeHighlight(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, guint time);
 		void changeLayout();
 		void destroy(Gtk::Container& container);
+		void validateSelection();
 
 		std::string path;
 		bool drop = true;
@@ -32,6 +33,7 @@ class MyWindow : public Gtk::Window
 		Gtk::ScrolledWindow m_scrolledWindowChords;
 		Gtk::TextView m_textViewChords;
 		Gtk::Button m_buttonClear;
+		Gtk::Window *windowSelection;
 };
 
 #endif

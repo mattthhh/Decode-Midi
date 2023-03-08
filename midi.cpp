@@ -107,6 +107,7 @@ void Midi::analyse(smf::MidiFile& midifile)
 	for (int j = 0; j < midifile.getTrackCount(); j++)
 	{
 		log.append("--- Track n°").append(std::to_string(j)).append("---").append("\n");
+		instruments.push_back("");
 		for (int i = 0; i < midifile[j].size(); i++)
 		{
 			int num = midifile[j][i].getKeyNumber();
@@ -128,23 +129,28 @@ void Midi::analyse(smf::MidiFile& midifile)
 			if (midifile[j][i].isMeta()) {
 				// check if hex bytes is 03 after FF
 				if (midifile[j][i][1] == 0x03) {
-					log.append("Text : ");
+					log.append("Track Instrument : ");
 					unsigned int k = 3;
 					while ((midifile[j][i][k] >= 0x20 && midifile[j][i][k] <= 0x7E) || (midifile[j][i][k] >= 0xC0 && midifile[j][i][k] <= 0xFF)) {
 						if (midifile[j][i][k] == 0xE2 && midifile[j][i][k+1] == 0x99 && midifile[j][i][k+2] == 0xAD) {
 							log.append("b");
+							instruments[j].append("b");
 							k += 2;
 						}
 						else if (midifile[j][i][k] == 0xE2 && midifile[j][i][k+1] == 0x99 && midifile[j][i][k+2] == 0xAF) {
 							log.append("#");
+							instruments[j].append("#");
 							k += 2;
 						}
 						else if (midifile[j][i][k] >= 0xC0 && midifile[j][i][k] <= 0xFF) {
 							log.append(utf8(midifile[j][i][k], midifile[j][i][k+1]));
+							instruments[j].append(utf8(midifile[j][i][k], midifile[j][i][k+1]));
 							k++;
 						}
-						else
+						else {
 							log.append(std::string(1, midifile[j][i][k]));	
+							instruments[j].append(std::string(1, midifile[j][i][k]));
+						}
 						k++;
 					}
 					log.append("\n");
@@ -170,4 +176,9 @@ std::string Midi::getChords()
 std::string Midi::getLog()
 {
 	return log;
+}
+
+std::vector<std::string> Midi::getInstruments()
+{
+	return instruments;
 }

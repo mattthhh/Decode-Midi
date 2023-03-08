@@ -151,6 +151,50 @@ void MyWindow::changeLayout()
 {
 	if (drop)
 	{
+		Midi midi(path);
+		smf::MidiFile midiFile;
+		midiFile.read(path);
+		midi.analyse(midiFile);
+
+		windowSelection = new Gtk::Window();
+		windowSelection->set_name("trackSelection");
+		windowSelection->set_default_size(500, 300);
+		windowSelection->set_modal(true);
+		Gtk::HeaderBar* headerBar = new Gtk::HeaderBar();
+		headerBar->set_title("Select tracks to analyse");
+		Gtk::Button* validateButton = new Gtk::Button();
+		validateButton->set_image_from_icon_name("gtk-apply", Gtk::ICON_SIZE_BUTTON);
+		validateButton->signal_clicked().connect(sigc::mem_fun(*this, &MyWindow::validateSelection));
+		headerBar->pack_end(*validateButton);
+		windowSelection->set_titlebar(*headerBar);
+		Gtk::Box* box = new Gtk::Box(Gtk::ORIENTATION_VERTICAL);
+		windowSelection->add(*box);
+		Gtk::ScrolledWindow* scrolledWindow = new Gtk::ScrolledWindow();
+		scrolledWindow->set_policy(Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
+		box->pack_start(*scrolledWindow, true, true);
+		Gtk::ListBox* listBox = new Gtk::ListBox();
+		listBox->set_selection_mode(Gtk::SELECTION_MULTIPLE);
+		scrolledWindow->add(*listBox);	
+		for (int i = 0; i < midiFile.getTrackCount(); i++)
+		{
+			Gtk::ListBoxRow* row = new Gtk::ListBoxRow();
+			row->set_size_request(-1, 30);
+			row->set_selectable(false);
+			Gtk::Box* box = new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL);
+			row->add(*box);
+			Gtk::Label* label = new Gtk::Label(midi.getInstruments()[i]);
+			box->pack_start(*label, true, true);
+			Gtk::Switch* switchButton = new Gtk::Switch();
+			switchButton->set_active(true);
+			box->pack_start(*switchButton, false, false);
+			listBox->add(*row);
+		}
+		windowSelection->show_all();
+		windowSelection->present();
+		while (windowSelection->is_visible())
+			Gtk::Main::iteration();
+
+
 		destroy(m_mainBox);
 		destroy(m_leftBox);
 		m_leftBox.set_name("leftBox");
@@ -162,10 +206,6 @@ void MyWindow::changeLayout()
 		buffer->set_text("Test");
 		m_leftBox.pack_start(m_labelChords, false, false);
 		m_leftBox.pack_start(m_scrolledWindowChords);
-		Midi midi(path);
-		smf::MidiFile midiFile;
-		midiFile.read(path);
-		midi.analyse(midiFile);
 		m_textViewChords.get_buffer()->set_text(midi.getChords());
 		std::string text = m_textViewChords.get_buffer()->get_text();
 		std::string font = "Arial ";
@@ -202,3 +242,7 @@ void MyWindow::destroy(Gtk::Container& container)
 	}
 }
 
+void MyWindow::validateSelection()
+{
+	windowSelection->hide();
+}

@@ -12,9 +12,11 @@ class Midi
 		void analyse(smf::MidiFile& midifile);
 		std::string getChords();
 		std::string getLog();
+		std::vector<std::string> getInstruments();
 	protected:
 		std::string path;
 		std::string log;
+		std::vector<std::string> instruments;
 
 		unsigned int currentNoteOn = 0;
 		unsigned int lastTick = 0;
