@@ -22,7 +22,7 @@ class Midi
 		unsigned int lastTick = 0;
 		std::vector<int> notes;
 		std::vector<std::string> chords;
-		std::string extaNotes[12] = { "", "b9", "9", "m", "", "sus4", "#11", "", "#5", "6", "7", "△7" };
+		std::string extaNotes[12] = { "", "b9", "9", "", "", "sus4", "#11", "", "#5", "6", "7", "△7" };
 
 		std::string removeLastZeros(std::string str);
 		bool contains(std::vector<std::string> vec, std::string str);

@@ -95,6 +95,9 @@ void Midi::computeChord()
 			chord.append(numToName(root));
 		}
 	}
+	// refind minor
+	if (contains(notes, (root+3)%12))
+		chord.append("m");
 	// extra notes
 	for (int i = 0; i < notes.size(); i++)
 		chord.append(extaNotes[(notes[i] - root) % 12]);
