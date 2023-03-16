@@ -16,6 +16,7 @@ class MyWindow : public Gtk::Window
 		void destroy(Gtk::Container& container);
 		void validateSelection();
 
+		std::vector<int> selectedTracks;
 		std::string path;
 		bool drop = true;
 
@@ -34,6 +35,7 @@ class MyWindow : public Gtk::Window
 		Gtk::TextView m_textViewChords;
 		Gtk::Button m_buttonClear;
 		Gtk::Window *windowSelection;
+		Gtk::ListBox *listBox;
 };
 
 #endif

@@ -9,7 +9,7 @@ class Midi
 {
 	public:
 		Midi(std::string path);
-		void analyse(smf::MidiFile& midifile);
+		void analyse(smf::MidiFile& midifile, std::vector<int> tracks = std::vector<int>());
 		std::string getChords();
 		std::string getLog();
 		std::vector<std::string> getInstruments();

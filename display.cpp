@@ -155,7 +155,9 @@ void MyWindow::changeLayout()
 		smf::MidiFile midiFile;
 		midiFile.read(path);
 		midi.analyse(midiFile);
+		selectedTracks.clear();
 
+		// windowSelection -> box -> scrolledWindow -> listBox
 		windowSelection = new Gtk::Window();
 		windowSelection->set_name("trackSelection");
 		windowSelection->set_default_size(500, 300);
@@ -172,7 +174,7 @@ void MyWindow::changeLayout()
 		Gtk::ScrolledWindow* scrolledWindow = new Gtk::ScrolledWindow();
 		scrolledWindow->set_policy(Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
 		box->pack_start(*scrolledWindow, true, true);
-		Gtk::ListBox* listBox = new Gtk::ListBox();
+		listBox = new Gtk::ListBox();
 		listBox->set_selection_mode(Gtk::SELECTION_MULTIPLE);
 		scrolledWindow->add(*listBox);	
 		for (int i = 0; i < midiFile.getTrackCount(); i++)
@@ -194,6 +196,10 @@ void MyWindow::changeLayout()
 		while (windowSelection->is_visible())
 			Gtk::Main::iteration();
 
+		if (selectedTracks.size() != midiFile.getTrackCount()) {
+			midi = Midi(path);
+			midi.analyse(midiFile, selectedTracks);
+		}
 
 		destroy(m_mainBox);
 		destroy(m_leftBox);
@@ -244,5 +250,18 @@ void MyWindow::destroy(Gtk::Container& container)
 
 void MyWindow::validateSelection()
 {
+	int i = 0;
+	for (auto row : listBox->get_children()) {
+		Gtk::ListBoxRow* listBoxRow = (Gtk::ListBoxRow*)row;
+		Gtk::Box* box = (Gtk::Box*)listBoxRow->get_children()[0];
+		Gtk::Switch* switchButton = (Gtk::Switch*)box->get_children()[1];
+		if (switchButton->get_active())
+			selectedTracks.push_back(i);
+		i++;
+	}
+	std::cout << "selected tracks : ";
+	for (auto i : selectedTracks)
+		std::cout << i << " ";
+	std::cout << std::endl;
 	windowSelection->hide();
 }

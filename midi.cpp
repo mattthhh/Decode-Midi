@@ -1,5 +1,12 @@
 #include "midi.h"
 
+bool contains(std::vector<int> vec, int num) {
+	for (int i = 0; i < vec.size(); i++)
+		if (vec[i] == num)
+			return true;
+	return false;
+}
+
 std::string utf8(int hex1, int hex2)
 {
 	std::stringstream ss;
@@ -105,63 +112,66 @@ void Midi::computeChord()
 		chords.push_back(chord);
 }
 
-void Midi::analyse(smf::MidiFile& midifile)
+void Midi::analyse(smf::MidiFile& midifile, std::vector<int> tracks)
 {
 	for (int j = 0; j < midifile.getTrackCount(); j++)
 	{
-		log.append("--- Track n°").append(std::to_string(j)).append("---").append("\n");
-		instruments.push_back("");
-		for (int i = 0; i < midifile[j].size(); i++)
+		if (contains(tracks, j) || tracks.size() == 0)
 		{
-			int num = midifile[j][i].getKeyNumber();
-			// si les notes s'enlevent en même temps, il ne faut pas compute
-			if (lastTick != midifile[j][i].tick && currentNoteOn > 2)
-				computeChord();
-			if (midifile[j][i].isTempo())
-				log.append("BPM : ").append(std::to_string(midifile[j][i].getTempoBPM())).append("\n");
-			if (midifile[j][i].isNoteOn()) {
-				log.append("Note On : ").append(numToName(num).append(std::to_string(num / 12))).append(" at the ").append(tickToPulse(midifile[j][i].tick)).append(".\n");
-				currentNoteOn++;
-				notes.push_back(midifile[j][i].getKeyNumber());
-			}
-			if (midifile[j][i].isNoteOff()) {
-				log.append("Note Off : ").append(numToName(num).append(std::to_string(num / 12))).append(" at the ").append(tickToPulse(midifile[j][i].tick)).append(".\n");
-				currentNoteOn--;
-				notes.erase(std::remove(notes.begin(), notes.end(), num), notes.end());
-			}
-			if (midifile[j][i].isMeta()) {
-				// check if hex bytes is 03 after FF
-				if (midifile[j][i][1] == 0x03) {
-					log.append("Track Instrument : ");
-					unsigned int k = 3;
-					while ((midifile[j][i][k] >= 0x20 && midifile[j][i][k] <= 0x7E) || (midifile[j][i][k] >= 0xC0 && midifile[j][i][k] <= 0xFF)) {
-						if (midifile[j][i][k] == 0xE2 && midifile[j][i][k+1] == 0x99 && midifile[j][i][k+2] == 0xAD) {
-							log.append("b");
-							instruments[j].append("b");
-							k += 2;
-						}
-						else if (midifile[j][i][k] == 0xE2 && midifile[j][i][k+1] == 0x99 && midifile[j][i][k+2] == 0xAF) {
-							log.append("#");
-							instruments[j].append("#");
-							k += 2;
-						}
-						else if (midifile[j][i][k] >= 0xC0 && midifile[j][i][k] <= 0xFF) {
-							log.append(utf8(midifile[j][i][k], midifile[j][i][k+1]));
-							instruments[j].append(utf8(midifile[j][i][k], midifile[j][i][k+1]));
+			log.append("--- Track n°").append(std::to_string(j)).append("---").append("\n");
+			instruments.push_back("");
+			for (int i = 0; i < midifile[j].size(); i++)
+			{
+				int num = midifile[j][i].getKeyNumber();
+				// si les notes s'enlevent en même temps, il ne faut pas compute
+				if (lastTick != midifile[j][i].tick && currentNoteOn > 2)
+					computeChord();
+				if (midifile[j][i].isTempo())
+					log.append("BPM : ").append(std::to_string(midifile[j][i].getTempoBPM())).append("\n");
+				if (midifile[j][i].isNoteOn()) {
+					log.append("Note On : ").append(numToName(num).append(std::to_string(num / 12))).append(" at the ").append(tickToPulse(midifile[j][i].tick)).append(".\n");
+					currentNoteOn++;
+					notes.push_back(midifile[j][i].getKeyNumber());
+				}
+				if (midifile[j][i].isNoteOff()) {
+					log.append("Note Off : ").append(numToName(num).append(std::to_string(num / 12))).append(" at the ").append(tickToPulse(midifile[j][i].tick)).append(".\n");
+					currentNoteOn--;
+					notes.erase(std::remove(notes.begin(), notes.end(), num), notes.end());
+				}
+				if (midifile[j][i].isMeta()) {
+					// check if hex bytes is 03 after FF
+					if (midifile[j][i][1] == 0x03) {
+						log.append("Track Instrument : ");
+						unsigned int k = 3;
+						while ((midifile[j][i][k] >= 0x20 && midifile[j][i][k] <= 0x7E) || (midifile[j][i][k] >= 0xC0 && midifile[j][i][k] <= 0xFF)) {
+							if (midifile[j][i][k] == 0xE2 && midifile[j][i][k+1] == 0x99 && midifile[j][i][k+2] == 0xAD) {
+								log.append("b");
+								instruments[j].append("b");
+								k += 2;
+							}
+							else if (midifile[j][i][k] == 0xE2 && midifile[j][i][k+1] == 0x99 && midifile[j][i][k+2] == 0xAF) {
+								log.append("#");
+								instruments[j].append("#");
+								k += 2;
+							}
+							else if (midifile[j][i][k] >= 0xC0 && midifile[j][i][k] <= 0xFF) {
+								log.append(utf8(midifile[j][i][k], midifile[j][i][k+1]));
+								instruments[j].append(utf8(midifile[j][i][k], midifile[j][i][k+1]));
+								k++;
+							}
+							else {
+								log.append(std::string(1, midifile[j][i][k]));	
+								instruments[j].append(std::string(1, midifile[j][i][k]));
+							}
 							k++;
 						}
-						else {
-							log.append(std::string(1, midifile[j][i][k]));	
-							instruments[j].append(std::string(1, midifile[j][i][k]));
-						}
-						k++;
+						log.append("\n");
 					}
-					log.append("\n");
 				}
+				lastTick = midifile[j][i].tick;
 			}
-			lastTick = midifile[j][i].tick;
+			notes.clear();
 		}
-		notes.clear();
 	}
 }
 
