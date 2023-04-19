@@ -1,0 +1,12 @@
+classique
+electro
+folk-country
+hardrock-metal
+jazz-blues-soul
+film-serie
+jeu-video
+pop-rock
+rap
+reggae
+rnb-funk-disco
+variete-francaise
