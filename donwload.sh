@@ -17,10 +17,28 @@ mv temp categories_l.txt
 sed 's/ /-/g' categories_l.txt > temp
 mv temp categories_l.txt
 
+mkdir songs
 mkdir html
 cd html
-I=1
 cat ../categories_l.txt | while read line 
 do
+	echo "... Downloading $line ..."
 	curl -s https://irma-web1.math.unistra.fr/math-musique/midi/$line-midi.html --output "$line.html"
+	xmllint --html --xpath "//a[not(ancestor::ul[@class='menu'])]/@href" "$line.html" > temp 2> /dev/null
+	sed 's/href="//g; s/"/\n/g; s/ //g' temp > temp2
+	mv temp2 temp
+	sed -e :a -e '$d;N;2,2ba' -e 'P;D' temp > temp2
+	mv temp2 temp
+	cd ../songs
+	mkdir $line
+	cd $line
+	cat ../../html/temp | while read line2
+	do
+		# get after last '/'
+		TITLE=${line2##*/}
+		echo $TITLE
+		curl https://irma-web1.math.unistra.fr/math-musique/midi/$line2 --output $TITLE
+	done
+	cd ../../html
+	echo "--- Downloading $line done ---"
 done
