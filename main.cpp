@@ -29,15 +29,7 @@ int main(int argc, char** argv)
 	Midi midi(argv[1]);
 	midi.analyse(midifile);
 	std::cout << midi.getLog() << std::endl;
-	/*
-	std::cout << "All chords passed : " << std::endl;
-	for (int i = 0; i < chords.size(); i++) {
-		std::cout << chords[i];
-		if (i != chords.size() - 1)
-			std::cout << ", ";
-		else
-			std::cout << std::endl;
-	}
-	*/
+	std::string chords = midi.getChords();
+	std::cout << "All chords passed : " << chords <<  std::endl;
 	return EXIT_SUCCESS;
 }
