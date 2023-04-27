@@ -3,3 +3,4 @@ CMake*
 cmake_install.cmake
 Makefile
 DecodeMidi
+.DS_Store
