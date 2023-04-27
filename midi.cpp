@@ -76,29 +76,38 @@ void Midi::computeChord()
 {
 	int root = findSmallest(notes);
 	std::string chord(numToName(root));
+	std::string after;
 	// find 3rd
 	bool minor = false;
 	if (contains(notes, (root+3)%12))
 		minor = true;
 	// 1st inversion
 	if (minor && contains(notes, (root+8)%12)) {
+		after.append("/");
+		after.append(chord);
+		chord.clear();
 		root = (root+8)%12;
-		chord.append("/");
 		chord.append(numToName(root));
 	} else if (!minor && !contains(notes, (root+5)%12) && contains(notes, (root+9)%12)) {
+		after.append("/");
+		after.append(chord);
+		chord.clear();
 		root = (root+9)%12;
-		chord.append("/");
 		chord.append(numToName(root));
 	}
 	// 2nd inversion
 	if (contains(notes, (root+5)%12)) {
 		if (contains(notes, (root+8)%12)) {
+			after.append("/");
+			after.append(chord);
+			chord.clear();
 			root = (root+5)%12;
-			chord.append("/");
 			chord.append(numToName(root));
 		} else if (contains(notes, (root+9)%12)) {
+			after.append("/");
+			after.append(chord);
+			chord.clear();
 			root = (root+5)%12;
-			chord.append("/");
 			chord.append(numToName(root));
 		}
 	}
@@ -108,6 +117,7 @@ void Midi::computeChord()
 	// extra notes
 	for (int i = 0; i < notes.size(); i++)
 		chord.append(extaNotes[(notes[i] - root) % 12]);
+	chord.append(after);
 	if (!contains(chords, chord))
 		chords.push_back(chord);
 }
