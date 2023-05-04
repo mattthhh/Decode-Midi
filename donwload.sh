@@ -3,7 +3,7 @@ function sed_p() {
     mv temp $2
 }
 
-curl -s https://irma-web1.math.unistra.fr/math-musique/midi.html --output home.html
+curl -s https://math-musique.pages.math.unistra.fr/midi.html --output home.html
 xmllint --html --xpath "//td/a/h3" home.html > cat.html 2> /dev/null
 sed 's/<[^>]*>/\n/g' cat.html > categories.txt
 sed '/^$/d' categories.txt > temp
@@ -23,7 +23,7 @@ cd html
 cat ../categories_l.txt | while read line 
 do
 	echo "... Downloading $line ..."
-	curl -s https://irma-web1.math.unistra.fr/math-musique/midi/$line-midi.html --output "$line.html"
+	curl -s https://math-musique.pages.math.unistra.fr/midi/$line-midi.html --output "$line.html"
 	xmllint --html --xpath "//a[not(ancestor::ul[@class='menu'])]/@href" "$line.html" > temp 2> /dev/null
 	sed 's/href="//g; s/"/\n/g; s/ //g' temp > temp2
 	mv temp2 temp
@@ -32,13 +32,27 @@ do
 	cd ../songs
 	mkdir $line
 	cd $line
-	cat ../../html/temp | while read line2
+	cat ../../html/temp | while read -r line2
 	do
 		# get after last '/'
 		TITLE=${line2##*/}
 		echo $TITLE
-		curl https://irma-web1.math.unistra.fr/math-musique/midi/$line2 --output $TITLE
+		curl https://math-musique.pages.math.unistra.fr/midi/$line2 --output "$TITLE"
 	done
 	cd ../../html
 	echo "--- Downloading $line done ---"
 done
+cd ../songs
+rm -rf */*.pdf */*.html
+for dir in */
+do
+    echo "Cleaning up MIDI files in $dir ..."
+    find "$dir" -type f -name "*.mid" | while read -r file
+    do
+        if cat "$file" | grep -q html; then
+            echo "Deleting $file ..."
+            rm "$file"
+        fi
+    done
+done
+

@@ -45,6 +45,8 @@ bool Midi::contains(std::vector<int> vec, int num)
 
 int Midi::findSmallest(std::vector<int> vec)
 {
+	if (vec.size() == 0)
+		return -1;
 	int smallest = vec[0];
 	for (int i = 0; i < vec.size(); i++)
 		if (vec[i] < smallest)
@@ -75,6 +77,8 @@ std::string Midi::tickToPulse(int tick)
 void Midi::computeChord()
 {
 	int root = findSmallest(notes);
+	if (root < 0)
+		return;
 	std::string chord(numToName(root));
 	std::string after;
 	// find 3rd
@@ -146,7 +150,9 @@ void Midi::analyse(smf::MidiFile& midifile, std::vector<int> tracks)
 				if (midifile[j][i].isNoteOff()) {
 					log.append("Note Off : ").append(numToName(num).append(std::to_string(num / 12))).append(" at the ").append(tickToPulse(midifile[j][i].tick)).append(".\n");
 					currentNoteOn--;
-					notes.erase(std::remove(notes.begin(), notes.end(), num), notes.end());
+					auto it = std::find(notes.begin(), notes.end(), num);
+					if (it != notes.end())
+						notes.erase(it);
 				}
 				if (midifile[j][i].isMeta()) {
 					// check if hex bytes is 03 after FF

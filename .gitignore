@@ -4,3 +4,10 @@ cmake_install.cmake
 Makefile
 DecodeMidi
 .DS_Store
+songs/
+html/
+data/
+*/*.txt
+*/*.html
+*.html
+*.txt
