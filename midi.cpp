@@ -154,6 +154,7 @@ void Midi::analyse(smf::MidiFile& midifile, std::vector<int> tracks)
 					if (it != notes.end())
 						notes.erase(it);
 				}
+				/*
 				if (midifile[j][i].isMeta()) {
 					// check if hex bytes is 03 after FF
 					if (midifile[j][i][1] == 0x03) {
@@ -184,6 +185,7 @@ void Midi::analyse(smf::MidiFile& midifile, std::vector<int> tracks)
 						log.append("\n");
 					}
 				}
+				*/
 				lastTick = midifile[j][i].tick;
 			}
 			notes.clear();
